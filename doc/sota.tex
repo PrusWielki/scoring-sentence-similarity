@@ -36,31 +36,105 @@
 \begin{document}
 \maketitle
 \begin{abstract}
-  The aim of this project is to address one of a key challenges in natural language processing: the difficulty of accurately assessing sentence similarity across diverse language structures and specialized domains, such as technical support, healthcare, and legal contexts. Existing models often struggle with subtle semantic distinctions and variations in sentence structure, which are critical in real-world applications such as distinguishing between minor delays and significant issues in customer support settings. In this study we are analyzing current sentence similarity models, identifying limitations in domain adaptation, semantic nuance handling, and generalization. Through comprehensive evaluation across multiple benchmark datasets and real-world use cases, our research seeks to provide insights and potential improvements to enhance model performance and reliability.
+    Clustering textual data, such as user-generated comments or reviews, is a critical task in understanding and organizing large datasets. This work explores machine learning techniques to cluster text data effectively, focusing on applications like categorizing Amazon reviews into meaningful groups. By investigating state-of-the-art methods in natural language processing such vectorization and similarity metrics, and leveraging unsupervised learning algorithms, we aim to uncover latent patterns within textual datasets. Our approach aims to demonstrate the potential for automating content categorization, providing actionable insights for e-commerce, social media analysis, and other domains.
 \end{abstract}
 
 \section{Introduction}
-The scientific goal of this project is to enhance the accuracy and reliability of sentence similarity models, which play a critical role in understanding and processing human language in natural language processing (NLP) applications. Sentence similarity, the task of determining how closely two sentences resemble each other in meaning, is fundamental to various applications, such as search engines, customer support systems, and recommendation algorithms. However, current models often face challenges in accurately handling nuanced semantic differences, domain-specific language, and structural variations in sentences, which limits their effectiveness in practical, real-world scenarios.
+    Clustering textual data, such as online reviews, into meaningful categories is a critical yet challenging task, especially in the absence of predefined labels. Reviews can be grouped based on sentiment, topics, or other latent patterns, with no single "correct" clustering. This ambiguity complicates evaluation, as traditional clustering metrics often fail to capture the semantic nuances of text. Furthermore, encoding methods like TF-IDF or BERT embeddings influence how clusters form, adding another layer of complexity. To address these challenges, we propose a pipeline that preprocesses, encodes, clusters, and evaluates text data, with a focus on developing metrics that quantify clustering quality across multiple interpretations. This approach aims to enhance the reliability and interpretability of unsupervised clustering for large-scale textual datasets.
 
 \subsection{Research Questions}
 We aim to explore the following questions:
 \begin{enumerate}
-    \item How well do existing sentence similarity models handle semantic nuances and domain-specific language across various contexts (e.g., customer support, healthcare, legal)?
-    \item What are the primary limitations of current models in generalizing across different domains, and how do these affect practical performance?
-    \item What improvements or adaptations could make sentence similarity models more robust in applications that require precise language understanding?
+    \item What are the current methodologies for clustering text data, and how effectively do they perform in different contexts?
+    \item What metrics and evaluation frameworks are used to measure the performance of text clustering, particularly in unsupervised settings
+    \item What novel approaches or adaptations can enhance the robustness, interpretability, and accuracy of text clustering techniques?
 \end{enumerate}
 
-\subsection{Hypotheses}
-Our assumptions are:
+% \subsection{Hypotheses}
+% Our assumptions are:
+% \begin{enumerate}
+%     \item Current models may exhibit significant performance drops when applied to specialized domains due to inadequate adaptation to specific terminologies and context-specific meanings.
+%     \item Addressing these limitations through targeted evaluations can reveal opportunities for improving model performance, providing insights for more robust sentence similarity solutions. 
+% \end{enumerate}
+
+% During this research we aim to investigate these questions and hypotheses, contributing to the development of more accurate, adaptable, and reliable sentence similarity models for NLP applications.
+
+\section{State-of-the-Art in Text Clustering and Performance Evaluation}
+
+\subsection{Clustering Textual Data}
+Clustering textual data has advanced significantly with the advent of modern natural language processing techniques. Current approaches predominantly leverage embedding-based representations, deep learning, and hybrid methods. Embedding models, such as BERT, RoBERTa, and Sentence-BERT, transform high-dimensional text data into dense vector spaces, enabling clustering methods like k-means and fuzzy c-means (FCM) to identify latent patterns. For example, Sentence-BERT facilitates semantic clustering by creating embeddings optimized for sentence-level tasks.  
+
+Deep Embedded Clustering (DEC) integrates clustering with feature learning by jointly optimizing latent space representations and cluster assignments. It uses autoencoders to reduce dimensionality while refining clustering objectives, improving both accuracy and efficiency.
+
+Large language models (LLMs), such as GPT-3.5, have also been adapted for clustering tasks. These models not only generate embeddings but can also assist in refining and validating cluster interpretations through iterative feedback loops. Domain-specific clustering methods, such as keyphrase extraction, further enhance performance by grouping texts based on semantically meaningful phrases.
+
+\subsection{Evaluating Clustering Performance}
+The performance of text clustering is measured using a combination of quantitative and qualitative metrics. Key evaluation metrics include:
+\begin{itemize}
+    \item \textbf{Adjusted Rand Index (ARI):} ARI quantifies agreement between clustering and true labels, adjusted for chance.
+    \item \textbf{Normalized Mutual Information (NMI):} This measures the similarity between predicted clusters and ground truth categories, normalized by average entropy.
+    \item \textbf{Silhouette Coefficient:} This metric evaluates the compactness and separation of clusters using intra-cluster and inter-cluster distances.
+    \item \textbf{Accuracy with Hungarian Algorithm:} When ground truth labels are available, this method maps clusters to categories for accuracy measurement.
+    \item \textbf{Human Evaluation:} In unsupervised settings, qualitative assessments by human evaluators are critical for validating cluster relevance and interpretability.
+\end{itemize}
+
+These metrics highlight the challenges of assessing clustering quality in the absence of definitive labels. Hybrid evaluation frameworks that combine quantitative scores with human validation can provide deeper insights into clustering effectiveness.
+
+\section{Datasets}
+For this study, we utilize several publicly available datasets that provide rich sources of textual data. The following datasets will be used for clustering and evaluation:
+
 \begin{enumerate}
-    \item Current models may exhibit significant performance drops when applied to specialized domains due to inadequate adaptation to specific terminologies and context-specific meanings.
-    \item Addressing these limitations through targeted evaluations can reveal opportunities for improving model performance, providing insights for more robust sentence similarity solutions. 
+    \item \textbf{Amazon Reviews:}  
+    The Amazon Reviews dataset is a comprehensive collection of product reviews across various categories, including electronics, books, and clothing. It includes text data, ratings, and metadata such as product category and review date. This dataset is particularly useful for sentiment analysis and product categorization tasks. We will use reviews along with their ratings to explore clustering based on both sentiment and content. The dataset is available at: \url{https://nijianmo.github.io/amazon/index.html}.
+
+    \item \textbf{Yelp Reviews:}  
+    The Yelp Reviews dataset contains reviews from Yelp, covering businesses across different industries such as restaurants, hotels, and service providers. Each review includes the text, user ratings, and additional metadata like business information. This dataset offers a diverse set of texts that can be analyzed to uncover patterns in customer satisfaction and business categorization. The dataset is accessible at: \url{https://www.yelp.com/dataset}.
+    
+    \item \textbf{Twitter Sentiment Analysis:}  
+    The Twitter Sentiment140 dataset includes millions of tweets that are labeled with sentiment annotations: positive, negative, or neutral. It is widely used for sentiment analysis tasks and provides a valuable resource for clustering tweet content. We will use this dataset to explore how sentiment and text features can influence clustering outcomes. The dataset is available at: \url{https://www.kaggle.com/datasets/kazanova/sentiment140}.
 \end{enumerate}
 
-During this research we aim to investigate these questions and hypotheses, contributing to the development of more accurate, adaptable, and reliable sentence similarity models for NLP applications.
+
+\section{Solution Plan}
+\subsection{Clustering Textual Data}
+
+For the clustering process, we propose two approaches. 
+\begin{enumerate}
+    \item Sentence-BERT (SBERT) Approach:
+    The first approach will leverage Sentence-BERT (SBERT), a transformer-based model that generates semantically rich, dense embeddings for sentences or entire paragraphs. These embeddings capture deeper semantic relationships between sentences than traditional word embeddings. After obtaining the embeddings, we will experiment with various clustering algorithms, such as k-means, HDBSCAN and others. These algorithms will allow us to explore different clustering structures, with HDBSCAN in particular being useful for identifying clusters of varying densities, which is often ideal for textual data due to its inherent noise and varying distribution of content.
+
+    \item The second approach will combine Word2Vec embeddings with dimensionality reduction techniques such as UMAP (Uniform Manifold Approximation and Projection), autoencoders, etc, and clustering techniques such as k-means, HDBSCAN or etc. Word2Vec, a well-established word embedding technique, captures semantic relationships between words. By reducing the dimensionality of the word vectors with UMAP, we aim to visualize and cluster words or phrases in a lower-dimensional space. HDBSCAN will be employed to detect clusters of varying densities, which is particularly useful for discovering non-linear structures in textual data.
+\end{enumerate}
+
+\subsection{Evaluating Clustering Performance}
+
+\begin{enumerate}
+    \item \textbf{Standard Quantitative Metrics:}  
+    We will start by using well-established metrics from the state-of-the-art to evaluate clustering performance. These include:
+    \begin{itemize}
+        \item \textbf{Normalized Mutual Information (NMI)}: A metric that measures the agreement between the predicted clustering and the true labels, adjusting for chance. NMI is commonly used to evaluate clustering in settings where the true clusters are known and provides a normalized score between 0 and 1, with 1 indicating perfect agreement \cite{nmi_2017}.
+        \item \textbf{Adjusted Rand Index (ARI)}: Another widely-used metric that compares the clustering results with the ground truth, while correcting for the possibility of random clustering. The ARI ranges from -1 (no agreement) to 1 (perfect agreement) \cite{ari_2002}.
+        \item \textbf{Silhouette Score}: This score assesses the quality of clustering by measuring how similar an object is to its own cluster compared to other clusters. A high silhouette score indicates well-separated clusters \cite{silhouette_1987}.
+        \item \textbf{Davies-Bouldin Index}: This is another clustering evaluation metric that measures the average similarity ratio of each cluster with the cluster that is most similar to it. A lower score indicates better clustering quality \cite{davies_bouldin_1979}.
+    \end{itemize}
+
+    These metrics will help quantitatively assess the clustering quality and alignment with the ground truth, ensuring that our models are performing accurately.
+
+    \item \textbf{Novel Evaluation Using Large Language Models (LLMs):}  
+    In addition to the standard metrics, we will introduce a novel evaluation method by leveraging **Large Language Models (LLMs)**. This method aims to provide a more qualitative and interpretive validation of the clusters. Specifically, we plan to:
+    \begin{itemize}
+        \item \textbf{Cluster Interpretability}: We will use LLMs to generate summaries or human-readable explanations for the clusters. This will allow us to validate whether the clusters have meaningful, coherent content that aligns with human intuition. For example, the model could generate a summary of each cluster's central theme, enabling a human evaluator to judge whether the cluster captures relevant and consistent aspects of the data.
+        \item \textbf{Human Feedback and Adjustments}: By incorporating feedback from LLMs, we can refine and adjust clusters based on interpretations generated by the models. This process will be part of an iterative feedback loop that continuously improves the clustering outcomes.
+        \item \textbf{Quality Assurance through LLMs}: LLMs will also assist in validating whether the clusters are semantically meaningful. For instance, the model could check whether the key topics within a cluster are related and ensure that any outliers or inconsistencies are flagged for review.
+    \end{itemize}
+    This approach brings a novel perspective to clustering evaluation, combining the strengths of quantitative metrics with the interpretability and flexibility of LLMs.
+
+\end{enumerate}
 
 % include your bib file like this:
 %\bibliographystyle{acl}
 %\bibliography{acl2015}
-
+\newpage
+\bibliographystyle{plain}
+\bibliography{references}
 \end{document}

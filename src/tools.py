@@ -2,9 +2,10 @@ import torch
 from tqdm import tqdm
 from sklearn.decomposition import PCA
 import umap
-from sklearn.cluster import KMeans
+from sklearn.cluster import KMeans, AgglomerativeClustering, SpectralClustering, DBSCAN
+from sklearn.mixture import GaussianMixture
 import hdbscan
-from sklearn.cluster import AgglomerativeClustering
+from sklearn.metrics import silhouette_score
 
 
 # Function to generate embeddings
@@ -34,7 +35,7 @@ def generate_embeddings(texts, tokenizer, model, batch_size=16):
             embeddings.append(mean_embeddings)
     return torch.cat(embeddings, dim=0)
 
-def reduce_dimensionality(embeddings, n_components=300, algo='none'):
+def reduce_dimensionality(embeddings, n_components=50, algo='none'):
     """
     Reduce the dimensionality of embeddings using PCA.
     """
@@ -50,17 +51,31 @@ def reduce_dimensionality(embeddings, n_components=300, algo='none'):
 
 def perform_clustering(embeddings, n_clusters=5, algo='kmeans'):
     """
-    Cluster embeddings using KMeans.
+    Cluster embeddings using specified algorithm ('kmeans', 'hdbscan', 'agg', 'spectral', 'gmm', 'dbscan').
+    Embeddings are reduced via `reduce_dimensionality`.
+
+    Params:
+        embeddings (array): Data to cluster.
+        n_clusters (int): Number of clusters (used in relevant methods).
+        algo (str): Clustering algorithm.
+    Returns:
+        clusters (array): Cluster labels (-1 for noise in some methods).
     """
     reduced_embeddings = reduce_dimensionality(embeddings)
+
     if algo == 'kmeans':
-        kmeans = KMeans(n_clusters=n_clusters, random_state=42)
-        clusters = kmeans.fit_predict(reduced_embeddings)
+        clusters = KMeans(n_clusters=n_clusters, random_state=42).fit_predict(reduced_embeddings)
     elif algo == 'hdbscan':
-        # Perform HDBSCAN clustering
-        clusterer = hdbscan.HDBSCAN(min_cluster_size=15, prediction_data=True)
-        clusters = clusterer.fit_predict(reduced_embeddings)
+        clusters = hdbscan.HDBSCAN(min_cluster_size=15).fit_predict(reduced_embeddings)
     elif algo == 'agg':
-        agg_clustering = AgglomerativeClustering(n_clusters=n_clusters)
-        clusters = agg_clustering.fit_predict(reduced_embeddings)
+        clusters = AgglomerativeClustering(n_clusters=n_clusters).fit_predict(reduced_embeddings)
+    elif algo == 'spectral':
+        clusters = SpectralClustering(n_clusters=n_clusters, affinity='nearest_neighbors', random_state=42).fit_predict(reduced_embeddings)
+    elif algo == 'gmm':
+        clusters = GaussianMixture(n_components=n_clusters, random_state=42).fit_predict(reduced_embeddings)
+    elif algo == 'dbscan':
+        clusters = DBSCAN(eps=0.5, min_samples=10).fit_predict(reduced_embeddings)
+    else:
+        raise ValueError(f"Unsupported algorithm: {algo}")
+    
     return clusters

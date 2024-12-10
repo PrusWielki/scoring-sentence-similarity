@@ -6,6 +6,8 @@ from sklearn.cluster import KMeans, AgglomerativeClustering, SpectralClustering,
 from sklearn.mixture import GaussianMixture
 import hdbscan
 from sklearn.metrics import silhouette_score
+import re
+from sklearn.feature_extraction.text import ENGLISH_STOP_WORDS
 
 
 # Function to generate embeddings
@@ -79,3 +81,63 @@ def perform_clustering(embeddings, n_clusters=5, algo='kmeans'):
         raise ValueError(f"Unsupported algorithm: {algo}")
     
     return clusters
+
+def perform_clustering_without_PCA(embeddings, n_clusters=5, algo='kmeans'):
+    """
+    Cluster embeddings using specified algorithm ('kmeans', 'hdbscan', 'agg', 'spectral', 'gmm', 'dbscan').
+
+    Params:
+        embeddings (array): Data to cluster.
+        n_clusters (int): Number of clusters (used in relevant methods).
+        algo (str): Clustering algorithm.
+    Returns:
+        clusters (array): Cluster labels (-1 for noise in some methods).
+    """
+
+    if algo == 'kmeans':
+        clusters = KMeans(n_clusters=n_clusters, random_state=42, init='random').fit_predict(embeddings)
+    elif algo == 'hdbscan':
+        clusters = hdbscan.HDBSCAN(min_cluster_size=15).fit_predict(embeddings)
+    elif algo == 'agg':
+        clusters = AgglomerativeClustering(n_clusters=n_clusters).fit_predict(embeddings)
+    elif algo == 'spectral':
+        clusters = SpectralClustering(n_clusters=n_clusters, affinity='nearest_neighbors', random_state=42).fit_predict(embeddings)
+    elif algo == 'gmm':
+        clusters = GaussianMixture(n_components=n_clusters, random_state=42).fit_predict(embeddings)
+    elif algo == 'dbscan':
+        clusters = DBSCAN(eps=0.5, min_samples=10).fit_predict(embeddings)
+    else:
+        raise ValueError(f"Unsupported algorithm: {algo}")
+    
+    return clusters
+
+
+def tokenize(text):
+    """
+    Tokenize single text example:
+        remove punctruation and lowercase
+        split by spaces
+        remove stopwords
+    """
+    text = re.sub(r'[^\w\s]', '', text.lower())  # Remove punctuation and lowercase
+    tokens = text.split()  # Simple split by spaces
+    tokens = [token for token in tokens if token not in ENGLISH_STOP_WORDS]  # Remove stopwords
+    return tokens
+
+def calc_cluster_metrics(clusters, embeddings):
+    """
+    Calculate result metrics for predicted clusters:
+        number of clusters
+        silhoette score
+    """
+    unique_clusters = set(clusters)
+    if -1 in unique_clusters:
+        unique_clusters.remove(-1)
+    num_clusters = len(unique_clusters)
+    sil_score = -1
+    if (num_clusters > 1): # silhoette score requires at least 2 clusters
+        non_noise_mask = clusters != -1
+        filtered_embeddings = embeddings[non_noise_mask]
+        filtered_labels = clusters[non_noise_mask]
+        sil_score = silhouette_score(filtered_embeddings, filtered_labels, metric='euclidean')
+    return [num_clusters, sil_score]

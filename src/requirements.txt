@@ -1,0 +1,6 @@
+pandas
+numpy
+pydantic
+pydantic_ai 
+tqdm
+# langchain_community

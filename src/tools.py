@@ -112,3 +112,5 @@ def calc_cluster_metrics(clusters, embeddings):
         filtered_labels = clusters[non_noise_mask]
         sil_score = silhouette_score(filtered_embeddings, filtered_labels, metric='euclidean')
     return [num_clusters, sil_score]
+
+

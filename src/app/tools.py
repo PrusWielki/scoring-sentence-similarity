@@ -9,7 +9,13 @@ from sklearn.metrics import silhouette_score
 import re
 from sklearn.feature_extraction.text import ENGLISH_STOP_WORDS
 
-
+if torch.backends.mps.is_available():
+    mps_device = torch.device("mps")
+    x = torch.ones(1, device=mps_device)
+    print (x)
+else:
+    print ("MPS device not found.")
+    
 # Function to generate embeddings
 def generate_embeddings(texts, tokenizer, model, batch_size=16):
     """
